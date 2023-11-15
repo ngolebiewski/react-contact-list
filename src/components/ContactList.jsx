@@ -1,5 +1,5 @@
 import ContactRow from "./ContactRow";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 const dummyContacts = [
@@ -8,10 +8,23 @@ const dummyContacts = [
   { id: 3, name: "BB-8", phone: "888-888-8888", email: "bb8@droids.com" },
 ];
 
-
-
 const ContactList = () => {
   const [contacts, setContacts] = useState(dummyContacts);
+
+  useEffect(() => {
+
+    const fetchContacts = async () => {
+      try {
+        const response = await fetch(`https://fsa-jsonplaceholder-69b5c48f1259.herokuapp.com/users`);
+        const data = await response.json();
+        console.log(data);
+        setContacts(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchContacts();
+  }, []);
 
 
   return (
@@ -28,11 +41,12 @@ const ContactList = () => {
           <th>Phone</th>
         </tr>
 
-          {
-            contacts.map((contact) => {
-            return <ContactRow key={contact.id} contact = { contact } />})
-          }
-        
+        {
+          contacts.map((contact) => {
+            return <ContactRow key={contact.id} contact={contact} />
+          })
+        }
+
       </tbody>
     </table>
   )
